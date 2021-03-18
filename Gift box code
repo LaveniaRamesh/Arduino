@@ -1,2 +1,60 @@
-# Arduino
-Arduino giftbox as midterm project
+#include <LiquidCrystal.h>
+
+int duration=0;
+int distance=0;
+const int trigPin=6;
+const int echoPin=5;
+const int buzzerPin=7;
+const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+void setup()
+{
+  Serial.begin(9600);
+  lcd.begin(16,2);
+  pinMode(trigPin,OUTPUT);
+  pinMode(echoPin,INPUT);
+  pinMode(buzzerPin,OUTPUT);  
+
+}
+
+void loop()
+{
+  distance=findDistance();
+  
+  if(distance<10){
+    lcd.clear();
+  }
+  else{
+    lcd.setCursor(0,0);
+    lcd.print("HAPPY BIRTHDAY!");
+    playMusic();
+  } 
+}
+int findDistance(){
+  digitalWrite(trigPin,LOW);
+  delayMicroseconds(2);
+  
+  digitalWrite(trigPin,HIGH);
+  delayMicroseconds(10);
+  
+  duration=pulseIn(echoPin,HIGH);
+  distance=duration*0.0345/2;
+  Serial.println(distance);
+  return distance;
+}
+void playMusic(){
+
+  tone(buzzerPin, 1318, 150);   //E6
+  delay(175);
+  tone(buzzerPin, 1567, 150);   //G6
+  delay(175);
+  tone(buzzerPin, 2637, 150);   //E7
+  delay(175);
+  tone(buzzerPin, 2093, 150);   //C7
+  delay(175);
+  tone(buzzerPin, 2349, 150);   //D7
+  delay(175);
+  tone(buzzerPin, 3135, 500);   //G7
+  delay(500);  
+}
